@@ -2,98 +2,110 @@
 using namespace std;
 
 class heap {
-    public:
-      int arr[100];
-      int size;
+public:
+    int arr[100];
+    int size;
 
-    heap(){
-        arr[0] = -1;
+    heap() {
         size = 0;
     }
+
     // insertion - O(log n)
-    void insert(int val){
-        size = size + 1;
+    void insert(int val) {
+        arr[size] = val;
         int index = size;
-        arr[index] = val;
+        size++;
 
-        while(index > 1){
-            int parent = index/2;
+        while (index > 0) {
+            int parent = (index - 1) / 2;
 
-            if(arr[parent] < arr[index]){
+            if (arr[parent] < arr[index]) {
                 swap(arr[parent], arr[index]);
                 index = parent;
-            }
-            else{
-                return ;
+            } else {
+                return;
             }
         }
     }
 
-    void print(){
-        for(int i=1; i<=size; i++){
-            cout<< arr[i] << " ";
-        } cout<< endl;
+    void print() {
+        for (int i = 0; i < size; i++) {
+            cout << arr[i] << " ";
+        }
+        cout << endl;
     }
 
     // deletion - O(log n)
-    void deleteFromHeap(){
-        if(size == 0){
-            cout<< "Nothing to delete" <<endl;
-            return ;
+    void deleteFromHeap() {
+        if (size == 0) {
+            cout << "Nothing to delete" << endl;
+            return;
         }
 
-        // put last node in root
-        arr[1] = arr[size];
-        // remove last node
+        // put last element at root
+        arr[0] = arr[size - 1];
         size--;
 
-        // now, propagate root node to its correct position
-        int i=1;
-        while(i < size){
-            int leftIndex = 2*i;
-            int rightIndex = 2*i + 1;
+        int i = 0;
+        while (i < size) {
+            int leftIndex = 2 * i + 1;
+            int rightIndex = 2 * i + 2;
+            int largest = i;
 
-            if(leftIndex < size && arr[i] < arr[leftIndex]){
-                swap(arr[i], arr[leftIndex]);
-                i = leftIndex;
+            if (leftIndex < size && arr[largest] < arr[leftIndex]) {
+                largest = leftIndex;
             }
-            else if(rightIndex < size && arr[i] < arr[rightIndex]){
-                swap(arr[i], arr[rightIndex]);
-                i = rightIndex;
+            if (rightIndex < size && arr[largest] < arr[rightIndex]) {
+                largest = rightIndex;
             }
-            else {
-                return ;
+
+            if (largest != i) {
+                swap(arr[i], arr[largest]);
+                i = largest;
+            } else {
+                return;
             }
         }
-
     }
-    
 };
 
-void heapifyLogic(int arr[], int n, int i){
+/* ---------- Heapify Logic (0 Indexing) ---------- */
+void heapifyLogic(int arr[], int n, int i) {
     int largest = i;
-    int left = 2*i;
-    int right = 2*i + 1;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
 
-    if(left < n && arr[largest] < arr[left]){
+    if (left < n && arr[largest] < arr[left]) {
         largest = left;
     }
-    if(right < n && arr[largest] < arr[right]){
+    if (right < n && arr[largest] < arr[right]) {
         largest = right;
     }
 
-    if(largest != i){
+    if (largest != i) {
         swap(arr[largest], arr[i]);
-        heapifyLogic(arr, n, largest); 
+        heapifyLogic(arr, n, largest);
     }
 }
-void heapify(int arr[], int n){
-    for(int i=n/2; i>0; i--){
+
+void heapify(int arr[], int n) {
+    for (int i = n / 2 - 1; i >= 0; i--) {
         heapifyLogic(arr, n, i);
     }
 }
 
-int main(){
+// heap sort - O(n log n)
+void heapSort(int arr[], int n) {
+    int t = n;
+
+    while (t > 1) {
+        swap(arr[0], arr[t - 1]);
+        t--;
+        heapifyLogic(arr, t, 0);
+    }
+}
+
+int main() {
     heap h;
 
     h.insert(50);
@@ -107,12 +119,22 @@ int main(){
     h.deleteFromHeap();
     h.print();
 
-    int arr[6] = {-1, 54, 53, 55, 52, 50};
-    heapify(arr, 6);
-    cout<<"===== after heapify ======"<<endl;
-    for(int i=1; i<6; i++){
-        cout<< arr[i] <<" ";
-    }cout<<endl;
+    int arr[] = {54, 53, 55, 52, 50};
+    int n = 5;
+
+    heapify(arr, n);
+    cout << "===== after heapify ======" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    cout << "======== after heap-sort =========" << endl;
+    heapSort(arr, n);
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
 
     return 0;
 }
