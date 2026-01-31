@@ -12,7 +12,6 @@ private:
             }
 
             if (!visited[nbr]) {
-                visited[nbr] = true;
                 dfs(nbr, node, timer, disc, low, visited, adj, ans); // nbr becomes node and node becomes parent
                 low[node] = min(low[node], low[nbr]);
 
